@@ -1,0 +1,79 @@
+<script>
+
+	var workdeskState = 0;
+	var collapsewidth_default = '36px';
+	var collapsewidth_scrollbar = '54px';
+	var collapsewidth=collapsewidth_default;
+	
+	/*add class for animation*/
+	$("div[data-width=200px]").addClass("WorkdeskToggleWidth");
+	$("div[data-width=200px]>div.innerpanel>div").addClass("WorkdeskToggleWidth");
+
+	/*add the "<" or ">" text button. */
+	$(".grid-column-headers").html("<div id='toggleWD' style='text-align:right;width:100%;color:white;font-weight:bolder;text-shadow: 0px 0px 5px #a29898;'>&lt; &nbsp;</div>");
+
+	/*on click event*/
+	$("div[data-width=200px] div.grid-column-headers").click(function () {
+		/*if currently expanded, to collapse*/
+		if ($('div[data-width=200px] .scroll-wrapper').hasScrollBar())
+		{
+			collapsewidth=collapsewidth_scrollbar;
+		}
+		else
+		{
+			collapsewidth=collapsewidth_default;
+		}
+		if (workdeskState == 0) {
+			workdeskState = 1;
+			$("div[data-width=200px] b").hide(); /*hide section header*/
+			$("div[data-width=200px] table.grid-content-table span.runtime.-list-item > div > div").hide(); /*hide section header*/
+			$("#toggleWD").html("&gt; &nbsp;"); /*change toggle "<" ">"*/
+			$(".WorkdeskToggleWidth").animate({
+				width : collapsewidth
+			}, 500);
+		}
+		/*if currently collapsed. To expand.*/
+		else {
+			workdeskState = 0;
+			$(".WorkdeskToggleWidth").animate({
+				width : '200px'
+			}, 500);
+			$("div[data-width=200px] b").show();
+			$("div[data-width=200px] table.grid-content-table span.runtime.-list-item > div > div").show();
+			$("#toggleWD").html("&lt; &nbsp;"); /*change toggle "<" ">"*/
+		}
+	});
+
+	/*REFRESH BUTTON*/
+	$("span[name=WorkdeskRefreshButton]").click(function () {
+		$("div[name=contentFrame] iframe").attr("src", $("div[name=contentFrame] iframe").attr("src"))
+	});
+	/*left panel scrollbar*/
+	
+	(function($) {
+		$.fn.hasScrollBar = function() {
+			return this.get(0).scrollHeight > this.height();
+		}
+	})(jQuery)
+	
+	$(window).on('resize', function(){
+	 setWorkdeskSidebarHeight();
+	});
+
+
+	function setWorkdeskSidebarHeight(){
+		$('div[data-width=200px] .scroll-wrapper').css('max-height', $(window).height()-85);
+		
+	}
+	setWorkdeskSidebarHeight();
+	$(".grid-column-headers").show();
+	
+</script>
+<style> 
+	.WorkdeskToggleWidth .grid-column-headers {display:block !important;}
+	body {overflow-y:hidden !important}
+	div[data-width=200px] .scroll-wrapper {
+		overflow-y: auto !important;
+		overflow-x: hidden !important;
+	}
+</style>
